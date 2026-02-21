@@ -329,7 +329,7 @@ Responde EXCLUSIVAMENTE com o JSON abaixo preenchido (sem markdown, sem texto ex
 """
 def extract_with_gemini(texto: str) -> dict:
     genai.configure(api_key=st.secrets["gemini_api_key"])
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-2.0-flash")
     prompt = EXTRACTION_PROMPT.replace("{texto}", texto)
     response = model.generate_content(
         prompt,
@@ -551,7 +551,7 @@ def main():
         )
     with col_up2:
         pdf_file = st.file_uploader(
-            "🧪 @Plálises laboratoriais (.pdf) — opcional", type=["pdf"]
+            "🧪 Análises laboratoriais (.pdf) — opcional", type=["pdf"]
         )
 
     # ── PROCESSARB────────────────────────────────────────────────────────────
@@ -570,7 +570,7 @@ def main():
                     texto_total += "\n\n=== ANÁLISES LABORATORIAIS ===\n"
                     texto_total += parse_pdf(pdf_file.read())
                 except Exception as e:
-                    st.warning(f"NÃo foi possível ler o PDF das análises: {e}")
+                    st.warning(f"Não foi possível ler o PDF das análises: {e}")
 
         with st.spinner("A enviar para o Gemini e a extrair dados estruturados…"):
             try:
