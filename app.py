@@ -12,7 +12,7 @@ import re
 from datetime import datetime, date
 from docx import Document
 import pdfplumber
-import ioh
+import io
 import pandas as pd
 
 # ─── PAGE CONFIG ──────────────────────────────────────────────────────────────
