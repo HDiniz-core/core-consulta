@@ -12,7 +12,7 @@ import re
 from datetime import datetime, date
 from docx import Document
 import pdfplumber
-import io
+import ioh
 import pandas as pd
 
 # ─── PAGE CONFIG ──────────────────────────────────────────────────────────────
@@ -401,7 +401,7 @@ def build_doentes_row(n_processo: str, extracted: dict) -> list:
         sv(poc.get("fe_pct")), sv(poc.get("ee_ratio")),
         sv(poc.get("linhas_b_n")), sv(poc.get("vci_mm")),
         # Medicação (12 classes × 3)
-        *med3("rasi"), *med3("mra"), *med3("i"sglt2"), *med3("glp1ra"),
+        *med3("rasi"), *med3("mra"), *med3("isglt2"), *med3("glp1ra"),
         *med3("estatina"), *med3("diuretico_ansa"), *med3("diuretico_tiazida"),
         *med3("acetazolamida"), *med3("beta_bloqueante"),
         *med3("antiagregante"), *med3("anticoagulante"), *med3("ivabradina"),
