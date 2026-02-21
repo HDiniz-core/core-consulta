@@ -4,7 +4,8 @@ Extração automática de dados clínicos via Gemini → Google Sheets
 """
 
 import streamlit as st
-import google.generativeai as genai
+from google import genai
+from google.genai import types as genai_types
 import gspread
 from google.oauth2.service_account import Credentials
 import json
@@ -328,12 +329,12 @@ Responde EXCLUSIVAMENTE com o JSON abaixo preenchido (sem markdown, sem texto ex
 }
 """
 def extract_with_gemini(texto: str) -> dict:
-    genai.configure(api_key=st.secrets["gemini_api_key"])
-    model = genai.GenerativeModel("gemini-1.5-flash-latest")
+    client = genai.Client(api_key=st.secrets["gemini_api_key"])
     prompt = EXTRACTION_PROMPT.replace("{texto}", texto)
-    response = model.generate_content(
-        prompt,
-        generation_config=genai.types.GenerationConfig(
+    response = client.models.generate_content(
+        model="gemini-1.5-flash-latest",
+        contents=prompt,
+        config=genai_types.GenerateContentConfig(
             temperature=0.1,
             response_mime_type="application/json",
         )
