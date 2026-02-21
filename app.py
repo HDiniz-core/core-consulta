@@ -329,7 +329,7 @@ Responde EXCLUSIVAMENTE com o JSON abaixo preenchido (sem markdown, sem texto ex
 """
 def extract_with_gemini(texto: str) -> dict:
     genai.configure(api_key=st.secrets["gemini_api_key"])
-    model = genai.GenerativeModel("gemini-2.0-flash")
+    model = genai.GenerativeModel("gemini-1.5-flash-latest")
     prompt = EXTRACTION_PROMPT.replace("{texto}", texto)
     response = model.generate_content(
         prompt,
