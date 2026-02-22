@@ -4,8 +4,7 @@ Extração automática de dados clínicos via Gemini → Google Sheets
 """
 
 import streamlit as st
-from google import genai
-from google.genai import types as genai_types
+import anthropic
 import gspread
 from google.oauth2.service_account import Credentials
 import json
@@ -329,17 +328,14 @@ Responde EXCLUSIVAMENTE com o JSON abaixo preenchido (sem markdown, sem texto ex
 }
 """
 def extract_with_gemini(texto: str) -> dict:
-    client = genai.Client(api_key=st.secrets["gemini_api_key"])
+    client = anthropic.Anthropic(api_key=st.secrets["gemini_api_key"])
     prompt = EXTRACTION_PROMPT.replace("{texto}", texto)
-    response = client.models.generate_content(
-        model="gemini-2.0-flash-001",
-        contents=prompt,
-        config=genai_types.GenerateContentConfig(
-            temperature=0.1,
-            response_mime_type="application/json",
-        )
+    message = client.messages.create(
+        model="claude-sonnet-4-5",
+        max_tokens=8192,
+        messages=[{"role": "user", "content": prompt}]
     )
-    raw = response.text.strip()
+    raw = message.content[0].text.strip()
     # Limpar eventual markdown
     raw = re.sub(r"^```(?:json)?\s*", "", raw)
     raw = re.sub(r"\s*```$", "", raw)
