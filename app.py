@@ -332,7 +332,7 @@ def extract_with_gemini(texto: str) -> dict:
     client = genai.Client(api_key=st.secrets["gemini_api_key"])
     prompt = EXTRACTION_PROMPT.replace("{texto}", texto)
     response = client.models.generate_content(
-        model="gemini-1.5-flash-latest",
+        model="gemini-2.0-flash-lite",
         contents=prompt,
         config=genai_types.GenerateContentConfig(
             temperature=0.1,
