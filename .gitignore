@@ -1,0 +1,7 @@
+# Segredos — nunca versionar (o exemplo fica, os valores reais não)
+.streamlit/secrets.toml
+
+# Ambiente local
+.venv/
+__pycache__/
+*.pyc
