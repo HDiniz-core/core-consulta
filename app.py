@@ -482,11 +482,29 @@ def extract_with_claude(texto: str) -> dict:
     client = anthropic.Anthropic(api_key=get_api_key())
     prompt = EXTRACTION_PROMPT.replace("{texto}", texto)
     message = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=8192,
+        model="claude-sonnet-5",
+        # O Sonnet 5 raciocina por omissão, e o max_tokens limita raciocínio +
+        # resposta em conjunto — 8192 (o valor do Sonnet 4.5) arriscava truncar
+        # o JSON a meio. O effort "medium" chega para extração estruturada;
+        # sobe para "high" se notares campos a ficar por preencher.
+        max_tokens=16000,
+        thinking={"type": "adaptive"},
+        output_config={"effort": "medium"},
         messages=[{"role": "user", "content": prompt}]
     )
-    raw = message.content[0].text.strip()
+
+    if message.stop_reason == "max_tokens":
+        raise RuntimeError(
+            "A resposta foi cortada por falta de espaço (max_tokens). "
+            "O documento é provavelmente demasiado longo — divide-o ou aumenta o limite."
+        )
+
+    # Com raciocínio ativo, o primeiro bloco é o pensamento e não o texto:
+    # é preciso procurar o bloco de texto em vez de assumir content[0].
+    raw = next((b.text for b in message.content if b.type == "text"), "").strip()
+    if not raw:
+        raise RuntimeError("O Claude não devolveu texto — nada a extrair.")
+
     # Limpar eventual markdown
     raw = re.sub(r"^```(?:json)?\s*", "", raw)
     raw = re.sub(r"\s*```$", "", raw)
